@@ -1,0 +1,32 @@
+# secrets — never commit
+.env
+.env.*
+!*.example
+talon/.env
+contracts/script/spike/.spike-wallets.env
+# any generated wallet keyfile, whatever it's called
+*-wallets.env
+*.wallets.env
+
+# node
+node_modules/
+npm-debug.log*
+
+# contracts (Foundry)
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/
+contracts/broadcast/*/1337/
+
+# backend
+backend/dist/
+backend/node_modules/
+
+# frontend (Next.js)
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+
+# misc
+.DS_Store
+*.log

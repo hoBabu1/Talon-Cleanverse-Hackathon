@@ -1,0 +1,9 @@
+{
+  "chainId": 10143,
+  "chain": "monad-testnet",
+  "rpcUrl": "https://testnet-rpc.monad.xyz",
+  "EscrowVault": "0xb634379B2afdF12830eaef694cFeaE80fB0dFFB7",
+  "CorporateActionManager": "0xF897874bAe28443a60ef92741f7df504F90386b6",
+  "aUSDC": "0xaC0893567D43C3E7e6e35a72803df05416C1f20D",
+  "deployedAt": "2026-07-30T20:13:03.791Z"
+}

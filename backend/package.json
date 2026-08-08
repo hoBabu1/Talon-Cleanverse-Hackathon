@@ -1,0 +1,30 @@
+{
+  "name": "talon-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Talon backend \u2014 Cleanverse API client, on-chain indexer, corporate-action orchestration, audit export.",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx src/lib/decodeRevert.test.ts && tsx src/lib/awaitCleanverseWrite.test.ts && tsx src/lib/paginatedGetLogs.test.ts && tsx src/lib/entitlements.test.ts",
+    "test:flow": "tsx src/flow.e2e.test.ts",
+    "indexer": "tsx scripts/run-indexer.ts",
+    "indexer:watch": "tsx scripts/run-indexer.ts --watch"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@supabase/supabase-js": "^2.45.4",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.0.0",
+    "viem": "^2.21.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  }
+}

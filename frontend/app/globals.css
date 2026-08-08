@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Named `ink`, not `base`: a `--color-base` token would make Tailwind emit
+     `text-base` as a *color* utility, clashing with the font-size utility. */
+  --color-ink: #09090b;
+  --color-card: #18181b;
+  --color-edge: #27272a;
+  --color-accent: #f8651c;
+  --color-muted: #d4d4d8;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --radius-card: 20px;
+  --animate-marquee: marquee 48s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-gag-in: gag-in 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes gag-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.75);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* --- Lenis smooth scroll: recommended base styles --- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-autoToggle {
+  transition-property: overflow;
+  transition-duration: 1ms;
+  transition-behavior: allow-discrete;
+}
+/* Lenis ships `pointer-events: none` on iframes while smooth-scrolling; our
+   YouTube embed must stay clickable, so re-enable it explicitly. */
+.lenis.lenis-smooth iframe {
+  pointer-events: auto;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #09090b;
+  color: #ffffff;
+  font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #f8651c;
+  color: #ffffff;
+}
+
+/* --- Scroll reveal (cleanverse.com pattern: fade + 20px slide-up, staggered) --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-marquee,
+  .animate-pulse-dot,
+  .animate-float,
+  .animate-gag-in {
+    animation: none;
+  }
+}
+
+/* No-JS fallback: never hide content behind a JS-driven reveal. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* --- Marquee --- */
+.marquee-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* --- Print: audit export (Layer 6). Hides the app shell chrome (sidebar,
+   top bar, bottom tab bar, chain-guard banner) and any in-page controls
+   marked .no-print, leaving just the coverage summary + legs content. --- */
+@media print {
+  aside,
+  header,
+  nav[aria-label="Primary"],
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* The app shell's own wrapper divs (min-h-screen bg-ink, the flex column,
+     etc.) sit between <body> and .print-content and paint their own dark
+     background directly — body's !important alone doesn't reach through
+     an explicit background-color set lower in the tree. Force every
+     descendant transparent so body's white shows through everywhere. */
+  body * {
+    background: transparent !important;
+  }
+
+  main {
+    padding-bottom: 0 !important;
+  }
+
+  .print-content {
+    color: #000000 !important;
+  }
+
+  .print-content * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #999999 !important;
+  }
+
+  /* Audit sections may use .reveal for on-screen scroll-in polish; a section
+     never scrolled into view before window.print() must still print fully,
+     not sit at its pre-trigger opacity:0. */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

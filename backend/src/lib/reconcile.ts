@@ -18,7 +18,7 @@
  *
  * Run it continuously and expose it, so drift is discovered by us rather than by a judge.
  */
-import { parseAbi } from "viem";
+import { parseAbi, type ContractFunctionParameters } from "viem";
 import { publicClient, CONTRACTS, DEPLOY_BLOCKS, lc } from "./chain.js";
 import { requireSupabase } from "./supabase.js";
 import { getCursor } from "../jobs/indexer.js";
@@ -81,28 +81,97 @@ export async function indexedHolderSet(): Promise<string[]> {
   return [...set];
 }
 
-export async function reconcileCapTable(): Promise<Reconciliation> {
+/**
+ * How long a reconciliation stays reusable.
+ *
+ * Short enough that the cap table is never meaningfully stale, long enough that one page
+ * load doesn't recompute it three times — `/holders`, `/stats` and `/health` each call
+ * this, and the frontend requests all three at once.
+ */
+const RECONCILE_TTL_MS = 5_000;
+
+let cachedAt = 0;
+let cachedValue: Reconciliation | null = null;
+let inFlight: Promise<Reconciliation> | null = null;
+
+/**
+ * Reconcile the cap table, reusing a recent result rather than re-reading the chain.
+ *
+ * The cache exists because of a real production failure, not as premature optimization:
+ * three routes each called this on every page load, each firing 11 parallel `eth_call`s,
+ * and Monad's public RPC caps at **15 requests per second — counted per call, not per HTTP
+ * request** (verified: a 30-call JSON-RPC batch returns exactly 15 results and 15
+ * `requests limited to 15/sec` errors, so batching alone does not help). The deployed
+ * backend answered 500 for `/holders`, `/stats` and `/vault-health`.
+ *
+ * `inFlight` matters as much as the TTL. Three simultaneous callers on a cold cache would
+ * each start their own reconciliation and reproduce the burst exactly; instead they await
+ * the same one.
+ *
+ * `fresh` bypasses both, for `/debug/reconcile` — a debug route that returned a cached
+ * answer would be useless for the one job it has.
+ */
+export async function reconcileCapTable(opts: { fresh?: boolean } = {}): Promise<Reconciliation> {
+  if (!opts.fresh) {
+    if (cachedValue && Date.now() - cachedAt < RECONCILE_TTL_MS) return cachedValue;
+    if (inFlight) return inFlight;
+  }
+
+  const run = computeReconciliation().then((value) => {
+    cachedValue = value;
+    cachedAt = Date.now();
+    return value;
+  });
+
+  if (!opts.fresh) {
+    inFlight = run;
+    // Only clear the slot if it is still ours — a concurrent `fresh` call must not null
+    // out the shared promise that other callers are waiting on.
+    void run.finally(() => {
+      if (inFlight === run) inFlight = null;
+    });
+  }
+  return run;
+}
+
+async function computeReconciliation(): Promise<Reconciliation> {
   const asset = CONTRACTS.tlnb;
-  const [totalSupply, headBlock, addresses] = await Promise.all([
-    publicClient.readContract({ address: asset, abi: ERC20, functionName: "totalSupply" }),
+  const [headBlock, addresses] = await Promise.all([
     publicClient.getBlockNumber(),
     indexedHolderSet(),
   ]);
 
-  // Balances come from the chain, one read per holder. Deliberately not multicall: this
-  // runs over ~10 holders, and depending on a Multicall3 deployment being present on
-  // Monad testnet would trade a real dependency for an invisible saving.
-  const balances = await Promise.all(
-    addresses.map(async (address) => ({
-      address,
-      balance: await publicClient.readContract({
-        address: asset,
-        abi: ERC20,
-        functionName: "balanceOf",
-        args: [address as `0x${string}`],
-      }),
+  // totalSupply + every holder balance in ONE eth_call.
+  //
+  // This was previously one read per holder, with a comment reasoning that depending on a
+  // Multicall3 deployment on Monad testnet would trade a real dependency for an invisible
+  // saving. Both halves of that turned out to be wrong: Multicall3 IS deployed at the
+  // canonical address (confirmed by eth_getCode, see chain.ts), and the saving is not
+  // invisible — it is 11 RPC calls versus 2, against a 15/sec ceiling.
+  // Annotated rather than inferred: TS infers the element type from the first entry
+  // ("totalSupply") and then rejects the "balanceOf" spread.
+  const contracts: ContractFunctionParameters[] = [
+    { address: asset, abi: ERC20, functionName: "totalSupply" },
+    ...addresses.map((address) => ({
+      address: asset,
+      abi: ERC20,
+      functionName: "balanceOf",
+      args: [address as `0x${string}`],
     })),
-  );
+  ];
+
+  const results = await publicClient.multicall({
+    contracts,
+    // A partial cap table is the failure this whole module exists to catch, so a failed
+    // read must throw rather than quietly reconcile against fewer holders.
+    allowFailure: false,
+  });
+
+  const totalSupply = results[0] as bigint;
+  const balances = addresses.map((address, i) => ({
+    address,
+    balance: results[i + 1] as bigint,
+  }));
 
   const indexedSum = balances.reduce((a, b) => a + b.balance, 0n);
   const shortfall = totalSupply - indexedSum;

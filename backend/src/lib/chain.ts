@@ -11,6 +11,14 @@ export const monadTestnet = defineChain({
   blockExplorers: {
     default: { name: "MonadScan", url: "https://testnet.monadscan.com" },
   },
+  /// Multicall3 at its canonical cross-chain address, CONFIRMED deployed on Monad testnet
+  /// by `eth_getCode` (3.8KB of bytecode) rather than assumed from the address being
+  /// standard. Declaring it here lets `publicClient.multicall` batch N reads into a single
+  /// `eth_call`, which is the difference between the cap table loading and the public RPC
+  /// answering "requests limited to 15/sec".
+  contracts: {
+    multicall3: { address: "0xcA11bde05977b3631167028862bE2a173976CA11" },
+  },
   testnet: true,
 });
 

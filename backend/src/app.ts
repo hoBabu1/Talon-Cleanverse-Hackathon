@@ -84,7 +84,10 @@ export async function buildApp(opts: BuildAppOptions = {}): Promise<FastifyInsta
   });
 
   /** The same reconciliation, alone, for when you want the detail without the rest. */
-  app.get("/debug/reconcile", async () => serializeReconciliation(await reconcileCapTable()));
+  app.get("/debug/reconcile", async () =>
+    // Explicitly uncached — the point of this route is to read the chain right now.
+    serializeReconciliation(await reconcileCapTable({ fresh: true })),
+  );
 
   await app.register(holderRoutes);
   await app.register(onboardRoutes);

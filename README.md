@@ -8,7 +8,7 @@ Built solo for the [Cleanverse Build: Trusted Assets Hackathon](https://cleanver
 
 ### Try it now
 
-- ▶ **Demo video:** [watch the walkthrough](PASTE_DEMO_VIDEO_LINK_HERE) &nbsp;*(link coming)*
+- ▶ **Demo video:** [watch the walkthrough](https://youtu.be/CT_b-7mUf2U)
 - 🖥️ **Live app:** <https://talon-cleanverse-hackathon.vercel.app>
 - 🩺 **Backend health:** <https://talon-cleanverse-hackathon.onrender.com/health>
 - 📜 **Code:** <https://github.com/hoBabu1/Talon-Cleanverse-Hackathon>
@@ -68,6 +68,8 @@ Contracts are **deployed and frozen**. Every address below is clickable:
 
 ## How it's built
 
+![Talon protocol map — issuer → dashboard → backend → contracts → Cleanverse](docs/protocol-map.png)
+
 Three independent pieces, one repo:
 
 - **`contracts/`** — [Foundry / Solidity](https://github.com/hoBabu1/Talon-Cleanverse-Hackathon/tree/main/contracts). [`EscrowVault.sol`](https://github.com/hoBabu1/Talon-Cleanverse-Hackathon/blob/main/contracts/src/EscrowVault.sol) (a multi-token, per-beneficiary sub-ledger) + [`CorporateActionManager.sol`](https://github.com/hoBabu1/Talon-Cleanverse-Hackathon/blob/main/contracts/src/CorporateActionManager.sol) (declares an action against a token + record block; tries a direct payout per holder, escrows on revert).
@@ -99,13 +101,6 @@ Properties the contracts *already have*, not aspirations:
 - **Event-sourced** — off-chain state rebuilds from logs; the DB is a read-mirror, never the source of truth.
 
 **On the roadmap:** a self-serve issuer console + SDK so institutions run their own coupon runs, and multi-chain deployment (the backend already speaks Base, Polygon, Arbitrum & BSC).
-
-## Known gaps — stated honestly
-
-- **Reorgs are not handled.** Testnet, minutes-long demo. Production needs confirmation depth before mirroring an event.
-- **Batch size is not gas-capped.** The caller chooses batch boundaries; an oversized batch fails on gas rather than being rejected up front.
-- **Release attribution is FIFO-inferred** when a beneficiary holds escrow from multiple actions — and it's **labelled as an inference in the UI**. We don't present a guess as fact.
-- **Supabase is a read-mirror, never the audit trail.** The on-chain events are authoritative; the mirror just makes them queryable.
 
 ## Run it locally
 

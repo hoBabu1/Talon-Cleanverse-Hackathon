@@ -16,7 +16,6 @@ import { useMemo, useState } from "react";
 import { Badge } from "@/components/app/badge";
 import { ErrorState } from "@/components/app/error-state";
 import { STATE_META, relativeTime } from "@/components/app/holder-card";
-import { IdentityControl } from "@/components/app/identity-control";
 import { IdentityGem } from "@/components/app/identity-gem";
 import { RegisterDashboard } from "@/components/app/register-dashboard";
 import Reveal from "@/components/landing/Reveal";
@@ -133,14 +132,6 @@ export default function RegisterPage() {
       <Reveal className="mb-8">
         <RegisterDashboard />
       </Reveal>
-
-      {/* Directly above the cap table on purpose: the badge in the list below flips as
-          soon as the freeze is enforced, so cause and effect are on one screen. */}
-      {isOwner && (
-        <Reveal className="mb-8">
-          <IdentityControl />
-        </Reveal>
-      )}
 
       {vaultHealth && !vaultHealth.healthy && (
         <Reveal>

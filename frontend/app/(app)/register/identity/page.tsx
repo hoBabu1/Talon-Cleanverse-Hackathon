@@ -71,12 +71,15 @@ export default function IdentityPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
       <Reveal className="mb-6">
+        {/* Deliberately not "Identity control" — the panel below owns that heading, and
+            repeating it (with a near-identical subtitle) read as a stutter. This frames
+            the page; the card explains the mechanism. */}
         <div className="flex items-center gap-2">
           <ShieldAlert size={22} className="text-accent" />
-          <h1 className="text-2xl font-bold text-white">Identity control</h1>
+          <h1 className="text-2xl font-bold text-white">Identity</h1>
         </div>
         <p className="mt-1 text-sm text-muted">
-          Freeze or reinstate a holder&apos;s A-Pass, and see who in the register can be paid right now.
+          Who in the register can be paid right now — and the switch that changes it.
         </p>
       </Reveal>
 

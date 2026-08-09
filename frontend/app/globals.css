@@ -101,6 +101,16 @@ body {
   color: #ffffff;
 }
 
+/* Poppins has no emoji coverage, so an emoji inside it falls back per-platform
+   and can land on a monochrome glyph. Name the colour-emoji families first. */
+.emoji-glyph {
+  font-family:
+    "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol",
+    sans-serif;
+  font-weight: 400;
+  line-height: 1;
+}
+
 /* --- Scroll reveal (cleanverse.com pattern: fade + 20px slide-up, staggered) --- */
 .reveal {
   opacity: 0;
@@ -117,6 +127,44 @@ body {
   transform: translateY(0);
 }
 
+/* --- Drift diagram (Problem section): one staggered sequence off a single
+   trigger. `.dd-in` lands on the figure's root when it scrolls into view;
+   each child carries its own `--d` delay. Arrows *draw* rather than fade,
+   which `.reveal` can't express — hence the separate pair of classes.
+   Paths set pathLength="1" so one dasharray fits every arrow length. --- */
+.dd-item {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.dd-in .dd-item {
+  animation: dd-rise 550ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes dd-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dd-dash {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.dd-in .dd-dash {
+  animation: dd-draw 600ms ease forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes dd-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -125,6 +173,15 @@ body {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .dd-item {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .dd-dash {
+    stroke-dashoffset: 0;
+    animation: none;
   }
   .animate-marquee,
   .animate-pulse-dot,
@@ -136,9 +193,13 @@ body {
 
 /* No-JS fallback: never hide content behind a JS-driven reveal. */
 @media (scripting: none) {
-  .reveal {
+  .reveal,
+  .dd-item {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .dd-dash {
+    stroke-dashoffset: 0 !important;
   }
 }
 

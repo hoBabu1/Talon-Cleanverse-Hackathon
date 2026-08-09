@@ -21,6 +21,7 @@ import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagm
 import AppButton from "@/components/app/app-button";
 import { Badge } from "@/components/app/badge";
 import { ErrorState } from "@/components/app/error-state";
+import { IdentityGem } from "@/components/app/identity-gem";
 import { StatTile } from "@/components/app/stat-tile";
 import { WalletAddress } from "@/components/app/wallet-address";
 import Reveal from "@/components/landing/Reveal";
@@ -48,13 +49,6 @@ const REASON_META: Record<
   no_apass: { label: "No identity", icon: UserX, text: "text-zinc-400", bg: "bg-zinc-400/10", border: "border-zinc-400/20" },
   other: { label: "Unclassified", icon: AlertTriangle, text: "text-zinc-400", bg: "bg-zinc-400/10", border: "border-zinc-400/20", dashed: true },
 };
-
-/** Deterministic color gem from an address. */
-function gemStyle(address: string): React.CSSProperties {
-  let h = 0;
-  for (let i = 2; i < address.length; i++) h = (h * 31 + address.charCodeAt(i)) % 360;
-  return { background: `linear-gradient(135deg, hsl(${h} 70% 55%), hsl(${(h + 40) % 360} 75% 45%))` };
-}
 
 function DecodedBadge() {
   return (
@@ -168,9 +162,7 @@ function LiveEscrowItem({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-card border border-amber-400/25 bg-amber-400/[0.04] p-3 md:p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white/90" style={gemStyle(row.beneficiary)} aria-hidden>
-        <Snowflake size={16} />
-      </span>
+      <IdentityGem address={row.beneficiary} />
       <div className="min-w-0 flex-1">
         <WalletAddress wallet={row.beneficiary} copiedIcon={CheckCircle2} />
         <p className="mt-0.5 text-xs text-muted">held in escrow, awaiting eligibility</p>
@@ -186,9 +178,7 @@ function LiveEscrowItem({
 function DepositItem({ deposit, decimals }: { deposit: EscrowDeposit; decimals: number }) {
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-card border border-edge bg-card p-3 md:p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white/90" style={gemStyle(deposit.beneficiary)} aria-hidden>
-        {deposit.beneficiary.slice(2, 4).toUpperCase()}
-      </span>
+      <IdentityGem address={deposit.beneficiary} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <WalletAddress wallet={deposit.beneficiary} copiedIcon={CheckCircle2} />

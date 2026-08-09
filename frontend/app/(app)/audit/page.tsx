@@ -18,6 +18,7 @@ import { formatUnits } from "viem";
 import { EXCLUSION_REASON_LABEL } from "@/components/app/action-status";
 import AppButton from "@/components/app/app-button";
 import { Badge } from "@/components/app/badge";
+import { IdentityGem } from "@/components/app/identity-gem";
 import { ErrorState } from "@/components/app/error-state";
 import Reveal from "@/components/landing/Reveal";
 import { ApiError, type ActionRow, type AuditLeg, type LegOutcome } from "@/lib/api";
@@ -36,13 +37,6 @@ const SELECTOR_LABEL: Record<string, string> = {
   "0x4731ab32": "Returned false",
   "0x19957115": "Unknown revert",
 };
-
-/** Deterministic color gem from an address. */
-function gemStyle(address: string): React.CSSProperties {
-  let h = 0;
-  for (let i = 2; i < address.length; i++) h = (h * 31 + address.charCodeAt(i)) % 360;
-  return { background: `linear-gradient(135deg, hsl(${h} 70% 55%), hsl(${(h + 40) % 360} 75% 45%))` };
-}
 
 const COVERAGE_TONE = {
   emerald: "text-emerald-400",
@@ -81,9 +75,7 @@ function ReportCell({ leg, apiBase }: { leg: AuditLeg; apiBase: string }) {
 function LegItem({ leg, decimals, apiBase }: { leg: AuditLeg; decimals: number; apiBase: string }) {
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-card border border-edge bg-card p-3 md:p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white/90" style={gemStyle(leg.holder)} aria-hidden>
-        {leg.holder.slice(2, 4).toUpperCase()}
-      </span>
+      <IdentityGem address={leg.holder} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="font-mono text-sm text-white" title={leg.holder}>

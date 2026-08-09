@@ -7,6 +7,7 @@ import {
   getActions,
   getEscrow,
   getHolders,
+  getIdentity,
   getStats,
   getVaultHealth,
   getWalletHistory,
@@ -90,6 +91,22 @@ export function useWalletHistory(wallet: string | null) {
     queryFn: () => getWalletHistory(wallet as string),
     enabled: Boolean(wallet),
     refetchInterval: HOLDERS_REFETCH_MS,
+  });
+}
+
+/**
+ * One wallet's live on-chain eligibility.
+ *
+ * `watch` turns on a 3s poll: after a freeze the chain lags Cleanverse by a few seconds,
+ * and this is what watches it actually land. Off the rest of the time — this probe costs
+ * a simulated transfer per call and there is nothing to see when nothing is changing.
+ */
+export function useIdentity(wallet: string | null, watch = false) {
+  return useQuery({
+    queryKey: ["identity", wallet],
+    queryFn: () => getIdentity(wallet as string),
+    enabled: Boolean(wallet),
+    refetchInterval: watch ? 3_000 : false,
   });
 }
 

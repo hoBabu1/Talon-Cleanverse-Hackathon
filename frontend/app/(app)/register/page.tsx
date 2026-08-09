@@ -16,6 +16,8 @@ import { useMemo, useState } from "react";
 import { Badge } from "@/components/app/badge";
 import { ErrorState } from "@/components/app/error-state";
 import { STATE_META, relativeTime } from "@/components/app/holder-card";
+import { IdentityControl } from "@/components/app/identity-control";
+import { IdentityGem } from "@/components/app/identity-gem";
 import { RegisterDashboard } from "@/components/app/register-dashboard";
 import Reveal from "@/components/landing/Reveal";
 import { shortAddress } from "@/lib/site";
@@ -38,15 +40,6 @@ function syncedLabel(h: Holder): string {
   if (!h.lastSyncedAt) return "never synced";
   const ago = relativeTime(h.lastSyncedAt);
   return h.stale ? `last known ${ago}` : `synced ${ago}`;
-}
-
-/** Deterministic identity "gem" — two hues seeded off the address so every holder
- * has a stable, recognizable color chip without any avatar service. */
-function gemStyle(address: string): React.CSSProperties {
-  let h = 0;
-  for (let i = 2; i < address.length; i++) h = (h * 31 + address.charCodeAt(i)) % 360;
-  const h2 = (h + 40) % 360;
-  return { background: `linear-gradient(135deg, hsl(${h} 70% 55%), hsl(${h2} 75% 45%))` };
 }
 
 export default function RegisterPage() {
@@ -140,6 +133,14 @@ export default function RegisterPage() {
       <Reveal className="mb-8">
         <RegisterDashboard />
       </Reveal>
+
+      {/* Directly above the cap table on purpose: the badge in the list below flips as
+          soon as the freeze is enforced, so cause and effect are on one screen. */}
+      {isOwner && (
+        <Reveal className="mb-8">
+          <IdentityControl />
+        </Reveal>
+      )}
 
       {vaultHealth && !vaultHealth.healthy && (
         <Reveal>
@@ -375,13 +376,7 @@ function HolderListItem({ holder, rank, totalSupply }: { holder: Holder; rank: n
       <span className="hidden w-6 shrink-0 text-center text-sm font-semibold tabular-nums text-muted/50 sm:block">
         {rank}
       </span>
-      <span
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white/90 shadow-inner"
-        style={gemStyle(holder.wallet)}
-        aria-hidden
-      >
-        {meta.label[0]}
-      </span>
+      <IdentityGem address={holder.wallet} />
 
       <div className="min-w-0 flex-1">
         <span className="font-mono text-sm text-white transition-colors group-hover:text-accent">

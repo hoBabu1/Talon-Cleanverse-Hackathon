@@ -409,3 +409,60 @@ export interface WalletHistoryResponse {
 export function getWalletHistory(wallet: string) {
   return apiFetch<WalletHistoryResponse>(`/holders/${wallet}/history`);
 }
+
+// --- Identity control: freeze / reinstate an A-Pass ----------------------------------
+
+/**
+ * On-chain eligibility, as the token itself reads it. `inconclusive` is a real answer,
+ * not a missing one — it means the probe reverted naming somebody else, so it says
+ * nothing about this wallet.
+ */
+export type EligibilityState = "active" | "frozen" | "expired" | "no_apass" | "inconclusive";
+
+export interface IdentityResponse {
+  wallet: string;
+  state: EligibilityState;
+  hasApass: boolean;
+  apassStatus: number | null;
+  expirationTime: number | null;
+  cvRecordId: string | null;
+  isIssuer: boolean;
+  isVault: boolean;
+  /** Non-null means a freeze would be refused, and says why. */
+  freezeBlockedReason: string | null;
+}
+
+export type IdentityAction = "freeze" | "unfreeze";
+
+export interface IdentityStatusResponse {
+  address: string;
+  action: IdentityAction;
+  alreadyInState: boolean;
+  accepted: boolean;
+  /** Cleanverse's own registrar tx for the credential update. */
+  txHash: string | null;
+  /** True only once the CHAIN enforces it — never merely because Cleanverse returned 200. */
+  confirmed: boolean;
+  state: string;
+  elapsedMs: number;
+  note: string;
+}
+
+export function getIdentity(wallet: string) {
+  return apiFetch<IdentityResponse>(`/identity/${wallet}`);
+}
+
+export function setIdentityStatus(body: { address: string; action: IdentityAction; reason?: string }) {
+  return apiFetch<IdentityStatusResponse>("/identity/status", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // Only meaningful when the backend has ADMIN_TOKEN set. Shipped to the browser by
+      // definition, so it is a guard against drive-by calls, not authentication.
+      ...(process.env.NEXT_PUBLIC_ADMIN_TOKEN
+        ? { "x-talon-admin": process.env.NEXT_PUBLIC_ADMIN_TOKEN }
+        : {}),
+    },
+    body: JSON.stringify(body),
+  });
+}

@@ -9,6 +9,7 @@ import { formatUnits } from "viem";
 import { useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ActionStatusBadge, EXCLUSION_REASON_LABEL } from "@/components/app/action-status";
 import AppButton from "@/components/app/app-button";
+import { IdentityGem } from "@/components/app/identity-gem";
 import { WalletAddress } from "@/components/app/wallet-address";
 import { ErrorState } from "@/components/app/error-state";
 import Reveal from "@/components/landing/Reveal";
@@ -22,19 +23,10 @@ import { EXPLORER_ADDRESS_URL, EXPLORER_TX_URL, shortAddress } from "@/lib/site"
 
 type TabId = "record" | "execute" | "close" | "snapshot";
 
-/** Deterministic color gem from an address — same idea as the cap table. */
-function gemStyle(address: string): React.CSSProperties {
-  let h = 0;
-  for (let i = 2; i < address.length; i++) h = (h * 31 + address.charCodeAt(i)) % 360;
-  return { background: `linear-gradient(135deg, hsl(${h} 70% 55%), hsl(${(h + 40) % 360} 75% 45%))` };
-}
-
 function SnapshotItem({ row, decimals }: { row: SnapshotRow; decimals: number }) {
   return (
     <div className={`flex items-center gap-3 rounded-card border border-edge bg-card p-3 transition-colors hover:border-accent/40 ${row.included ? "" : "opacity-70"}`}>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white/90" style={gemStyle(row.holder)} aria-hidden>
-        {row.included ? "✓" : "–"}
-      </span>
+      <IdentityGem address={row.holder} size="sm" />
       <div className="min-w-0 flex-1">
         <WalletAddress wallet={row.holder} copiedIcon={CheckCircle2} />
         {!row.included && row.exclusion_reason && (

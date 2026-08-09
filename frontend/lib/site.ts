@@ -22,6 +22,17 @@ export const EXPLORER_TX_URL = "https://testnet.monadexplorer.com/tx/";
 
 export const HACKATHON_URL = "https://cleanverse.com/hackathon";
 
+/**
+ * The demo RWA the corporate-action form is about (what the action concerns,
+ * not what holders are paid in). Pre-fills the "Asset" field so the issuer
+ * doesn't type a 42-char address on camera.
+ */
+export const DEMO_ASSET = {
+  address: "0xbAE642890988C3EF56e77Fb041aFD847A6131d64",
+  symbol: "TLNB",
+  name: "Talon Bond 2026",
+} as const;
+
 /** Landing-page section anchors, shared by Nav and Footer. */
 export const NAV_LINKS = [
   { href: "#problem", label: "Problem" },

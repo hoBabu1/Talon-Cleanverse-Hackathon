@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useEffect, useState } from "react";
 import { formatUnits, parseUnits } from "viem";
-import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
+import { useBlockNumber, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import { EXCLUSION_REASON_LABEL } from "@/components/app/action-status";
 import { ActionsDashboard } from "@/components/app/actions-dashboard";
 import { ActionListItem } from "@/components/app/action-list-item";
@@ -18,12 +18,12 @@ import addresses from "@/lib/generated/addresses.json";
 import { useIsOwner } from "@/lib/hooks/useIsOwner";
 import { useTokenDecimals } from "@/lib/hooks/useTokenDecimals";
 import { useActions } from "@/lib/queries";
-import { shortAddress } from "@/lib/site";
+import { DEMO_ASSET, shortAddress } from "@/lib/site";
 
 function DeclareForm({ isOwner }: { isOwner: boolean }) {
   const router = useRouter();
   const [token, setToken] = useState(addresses.aUSDC);
-  const [asset, setAsset] = useState("");
+  const [asset, setAsset] = useState<string>(DEMO_ASSET.address);
   const [recordBlock, setRecordBlock] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
   const [batchSize, setBatchSize] = useState("");
@@ -31,6 +31,8 @@ function DeclareForm({ isOwner }: { isOwner: boolean }) {
   const [declareError, setDeclareError] = useState<string | null>(null);
 
   const { decimals } = useTokenDecimals(token);
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const isDemoAsset = asset.trim().toLowerCase() === DEMO_ASSET.address.toLowerCase();
 
   const prepareMutation = useMutation({
     mutationFn: prepareAction,
@@ -141,9 +143,27 @@ function DeclareForm({ isOwner }: { isOwner: boolean }) {
           <label className="flex flex-col gap-1.5 text-xs font-medium text-muted">
             Asset (what the action is about)
             <input value={asset} onChange={(e) => setAsset(e.target.value)} placeholder="0x…" className={`${fieldClass} font-mono`} />
+            {isDemoAsset && (
+              <span className="text-[11px] font-medium text-accent/90">
+                {DEMO_ASSET.symbol} · {DEMO_ASSET.name}
+              </span>
+            )}
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium text-muted">
-            Record block
+            <span className="flex items-center justify-between">
+              Record block
+              {blockNumber !== undefined && (
+                <button
+                  type="button"
+                  onClick={() => setRecordBlock(blockNumber.toString())}
+                  title="Use the current block as the record block"
+                  className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-accent transition-colors hover:text-accent/80"
+                >
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                  live: {blockNumber.toLocaleString("en-US")}
+                </button>
+              )}
+            </span>
             <input value={recordBlock} onChange={(e) => setRecordBlock(e.target.value)} placeholder="e.g. 51824000" inputMode="numeric" className={fieldClass} />
           </label>
           <label className="flex flex-col gap-1.5 text-xs font-medium text-muted">

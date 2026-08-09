@@ -81,7 +81,7 @@ Three independent pieces, one repo:
   ```
   `≤`, not `==` — anyone can donate tokens to the vault, and the surplus is recoverable via an owner-only `skim`.
 - **`contracts/scripts/live-smoke.mjs`** proves the whole thesis against **real aUSDC on real Monad testnet**: one holder paid directly, a second frozen → escrowed → unfrozen → released → claimed. Drift and recovery, end to end, with money that moves.
-- **`backend/src/flow.e2e.test.ts`** (`npm run test:flow`) drives the real routes, real chain, real Cleanverse sandbox and real Supabase — and after every step asserts the **chain and the mirror agree, field by field** (a bug once lived in exactly that seam). 64 live assertions.
+- **`backend/src/flow.e2e.test.ts`** (`npm run test:flow`) drives the real routes, real chain, real Cleanverse sandbox and real Supabase — and after every step asserts the **chain and the mirror agree, field by field** (a bug once lived in exactly that seam). It prints its full pass/fail assertion tally at the end of the run.
 
 ## Scales past the demo
 
@@ -93,7 +93,7 @@ Properties the contracts *already have*, not aspirations:
 - **Chained-hash commitment** — each batch folds into `runningHash`, seeded with a provenance binding, so a committed batch can't be replayed against a different action, token, or deployment.
 - **Event-sourced** — off-chain state rebuilds from logs; the DB is a read-mirror, never the source of truth.
 
-**On the roadmap:** a self-serve issuer console + SDK so institutions run their own coupon runs, and multi-chain deployment (the backend already speaks Base, Polygon, Arbitrum & BSC).
+**On the roadmap:** a self-serve issuer console + SDK so institutions run their own coupon runs, and multi-chain deployment — the Cleanverse client is already chain-parameterised (Base / Polygon / Arbitrum / BSC-ready), though only Monad is wired end to end today.
 
 ## Run it locally
 
@@ -110,7 +110,7 @@ cd backend && npm install && npm run dev     # GET /health verifies the live Cle
 cd frontend && npm install && npm run dev
 ```
 
-Secrets live only in gitignored `.env` files (`600` perms) and are never committed — see `.env.example` in each package for the required variable names.
+Secrets live only in gitignored `.env` files (`600` perms) and are never committed — see the `.env.example` (backend) and `.env.local.example` (frontend) files for the required variable names.
 
 ## Built by
 

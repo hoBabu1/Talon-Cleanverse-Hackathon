@@ -14,7 +14,7 @@ export default function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 md:px-8">
-        <a href="#top" className="group flex items-center gap-2.5" aria-label="Talon — back to top">
+        <a href="#top" className="group flex shrink-0 items-center gap-2.5" aria-label="Talon — back to top">
           <Image
             src="/brand/talon-mark.png"
             alt="Talon logo"
@@ -40,15 +40,17 @@ export default function Nav() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <Button href="#demo" variant="ghost" className="hidden md:inline-flex">
-            <Play size={14} fill="currentColor" />
-            Quick Guide
-          </Button>
-          <Button href={APP_ENTRY} className="hidden sm:inline-flex">
-            Launch App
-            <ArrowRight size={15} strokeWidth={2.5} />
-          </Button>
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
+            <Button href="#demo" variant="ghost">
+              <Play size={14} fill="currentColor" />
+              Quick Guide
+            </Button>
+            <Button href={APP_ENTRY}>
+              Launch App
+              <ArrowRight size={15} strokeWidth={2.5} />
+            </Button>
+          </div>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

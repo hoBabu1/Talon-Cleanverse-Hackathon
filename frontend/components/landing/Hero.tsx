@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { APP_ENTRY, GITHUB_URL } from "@/lib/site";
 import Button from "./Button";
 import Reveal from "./Reveal";
@@ -9,6 +9,12 @@ const CHIPS = [
   "0% entitlement forfeited (we counted)",
   "Frozen ≠ expired, on-chain",
   "Audit export your lawyer will actually like",
+] as const;
+
+const POINTS = [
+  "On pay date, re-verifies every holder’s Cleanverse identity",
+  "Pays compliant wallets directly",
+  "Escrows the rest per-beneficiary until they re-verify",
 ] as const;
 
 export default function Hero() {
@@ -41,15 +47,37 @@ export default function Hero() {
 
         <Reveal delay={180}>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
-            Talon runs everything that happens after an RWA is issued — coupons,
-            dividends, redemptions. On pay date it re-verifies every
-            holder&rsquo;s Cleanverse identity, pays compliant wallets directly,
-            and escrows the rest per-beneficiary until they re-verify. No
-            eligible holder forfeits. No ineligible holder gets paid.
+            Talon runs everything that happens{" "}
+            <span className="text-white/90">after</span> an RWA is issued —
+            coupons, dividends, redemptions.
           </p>
         </Reveal>
 
+        <Reveal delay={220}>
+          <ul className="mt-6 flex max-w-xl flex-col gap-2.5 text-left">
+            {POINTS.map((point) => (
+              <li
+                key={point}
+                className="flex items-start gap-3 text-base text-muted md:text-lg"
+              >
+                <Check
+                  size={18}
+                  strokeWidth={2.75}
+                  className="mt-[5px] shrink-0 text-accent"
+                />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
         <Reveal delay={260}>
+          <p className="mt-6 max-w-2xl text-base font-semibold leading-relaxed text-white md:text-lg">
+            No eligible holder forfeits. No ineligible holder gets paid.
+          </p>
+        </Reveal>
+
+        <Reveal delay={320}>
           <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
             <Button href={APP_ENTRY} size="lg" className="w-full sm:w-auto">
               Launch App
@@ -68,13 +96,13 @@ export default function Hero() {
           </div>
         </Reveal>
 
-        <Reveal delay={300}>
+        <Reveal delay={360}>
           <p className="mt-7 flex min-h-[1.5rem] max-w-xl items-center justify-center text-sm font-medium text-muted md:text-base">
             <RotatingGag />
           </p>
         </Reveal>
 
-        <Reveal delay={330}>
+        <Reveal delay={400}>
           <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-medium text-muted">
             {CHIPS.map((chip, i) => (
               <li key={chip} className="flex items-center gap-3">
@@ -87,7 +115,7 @@ export default function Hero() {
           </ul>
         </Reveal>
 
-        <Reveal delay={420} className="mt-14 w-full max-w-4xl md:mt-20">
+        <Reveal delay={460} className="mt-14 w-full max-w-4xl md:mt-20">
           <VideoEmbed />
         </Reveal>
       </div>

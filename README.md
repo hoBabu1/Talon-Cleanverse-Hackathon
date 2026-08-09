@@ -41,14 +41,6 @@ Eligibility drift **only exists because CVI credentials are revocable and expiri
 
 And the key design decision: **Talon never re-implements compliance.** It doesn't keep its own allowlist. At pay date it just attempts the *real* transfer, and Cleanverse's [A-Token](https://cleanverse.com) reverts by itself if a party isn't eligible. Escrow release is a **retry of that same real transfer** — so if it succeeds, the holder is *actually* eligible again, as judged by Cleanverse, not by us. The chain is the source of truth; we only react to it.
 
-## What's genuinely new (stated honestly)
-
-Prior art exists and we don't pretend otherwise — Polymesh ships a corporate-actions pallet, Securitize has DS Protocol. The honest, defensible claim is narrower:
-
-> Nobody preserves a lapsed holder's entitlement **per-beneficiary**, with an **expired-vs-frozen policy split**, and attributed release. Polymesh conflates lapsed-with-sanctioned and forfeits unclaimed value to the issuer at expiry. Talon doesn't.
-
-That distinction is enforced **in the contract, not the pitch deck**: `REASON_FROZEN` and `REASON_EXPIRED` are separate `bytes4` tags carrying the offending party's address, decoded from two genuinely different revert selectors observed live on Monad (`0x322fde89` frozen / `0xaecc0dbe` expired). Tagging them identically in our own audit trail would falsify our own headline claim with our own data.
-
 ---
 
 ## Live on Monad testnet — chain ID `10143`

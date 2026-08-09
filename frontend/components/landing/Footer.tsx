@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { APP_ENTRY, GITHUB_URL, HACKATHON_URL, NAV_LINKS } from "@/lib/site";
+import { APP_ENTRY, GITHUB_URL, HACKATHON_URL, NAV_LINKS, X_URL } from "@/lib/site";
 
 export default function Footer() {
   return (
@@ -71,6 +71,17 @@ export default function Footer() {
               </li>
               <li>
                 <a
+                  href={X_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white"
+                >
+                  X · @thedhanyosmi
+                  <ArrowUpRight size={13} />
+                </a>
+              </li>
+              <li>
+                <a
                   href={HACKATHON_URL}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -86,8 +97,8 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-2 border-t border-edge/60 pt-6 text-xs text-muted/70 md:flex-row md:items-center md:justify-between">
           <p>
-            © 2026 Talon · Built by Aman Kumar for the Cleanverse Build
-            Hackathon — RWA track.
+            © 2026 Talon · Built solo for the Cleanverse Build Hackathon — RWA
+            track.
           </p>
           <p>Contracts live on Monad testnet. Demo software — please don&rsquo;t YOLO your pension into it (yet).</p>
         </div>

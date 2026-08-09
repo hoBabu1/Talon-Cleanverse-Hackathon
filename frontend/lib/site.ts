@@ -6,8 +6,11 @@
 /** Entry point of the connected-wallet app (cap table dashboard). */
 export const APP_ENTRY = "/register";
 
-/** Public repo. TODO: replace with the real repository URL before submission. */
-export const GITHUB_URL = "https://github.com/REPLACE-WITH-TALON-REPO";
+/** Public repo. */
+export const GITHUB_URL = "https://github.com/hoBabu1/Talon-Cleanverse-Hackathon";
+
+/** Builder's X / Twitter. */
+export const X_URL = "https://x.com/thedhanyosmi";
 
 /**
  * Demo video. Paste the YouTube video ID here once the demo is recorded

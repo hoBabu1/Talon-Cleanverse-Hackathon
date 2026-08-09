@@ -1,11 +1,12 @@
 "use client";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { ChevronsLeft, ChevronsRight, Lock } from "lucide-react";
+import { AlertTriangle, ChevronsLeft, ChevronsRight, Lock, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
+import { IdentityGem } from "./identity-gem";
 import { useIsOwner } from "@/lib/hooks/useIsOwner";
 import { NAV_ITEMS, type NavChild, type NavItem } from "./nav-items";
 import { useSidebar } from "./sidebar-context";
@@ -104,12 +105,11 @@ export default function Sidebar() {
       </div>
 
       <div className={`mt-auto border-t border-edge p-3 ${expanded ? "" : "flex justify-center px-0"}`}>
-        <ConnectButton
-          showBalance={false}
-          chainStatus="icon"
-          accountStatus={expanded ? "address" : "avatar"}
-          label="Connect"
-        />
+        {expanded ? (
+          <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" label="Connect" />
+        ) : (
+          <RailWalletButton />
+        )}
       </div>
 
       {/* Drag handle — only meaningful while pinned open */}
@@ -126,6 +126,69 @@ export default function Sidebar() {
         </div>
       )}
     </aside>
+  );
+}
+
+/**
+ * The wallet control for the COLLAPSED rail.
+ *
+ * RainbowKit's own button can't fit here. `accountStatus` only governs the connected
+ * state, so while disconnected it renders the full "Connect" label at 92px inside a 68px
+ * rail — measured overflowing 11.5px past the rail and starting at x=-12.5, i.e. clipped
+ * off the left edge of the viewport. `ConnectButton.Custom` is RainbowKit's supported
+ * escape hatch: it hands over the same modals while we own the markup, so one 40px control
+ * covers every state instead of three differently-sized built-in ones.
+ *
+ * Connected renders the wallet's IdentityGem — the same deterministic avatar the cap table,
+ * escrow and audit pages use for that address, so the rail says "this is who you are" in
+ * the visual language the rest of the app already established.
+ */
+function RailWalletButton() {
+  return (
+    <ConnectButton.Custom>
+      {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
+        // `mounted` guards against rendering wallet state during hydration, when it isn't
+        // known yet — otherwise the rail briefly claims "disconnected" for a connected user.
+        const ready = mounted;
+        const connected = ready && account && chain;
+
+        const base =
+          "flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+        if (!ready) {
+          return <span className={`${base} bg-ink`} aria-hidden />;
+        }
+
+        if (!connected) {
+          return (
+            <button type="button" onClick={openConnectModal} title="Connect wallet" aria-label="Connect wallet"
+              className={`${base} bg-accent text-white shadow-[0_10px_36px_rgba(248,101,28,0.28)] hover:bg-[#ff7a38]`}>
+              <Wallet size={18} />
+            </button>
+          );
+        }
+
+        // Wrong network is its own state, not a variant of "connected": every write would
+        // revert, so it gets the alarming colour and routes to the chain switcher.
+        if (chain.unsupported) {
+          return (
+            <button type="button" onClick={openChainModal} title="Wrong network — switch to Monad testnet"
+              aria-label="Wrong network — switch to Monad testnet"
+              className={`${base} border border-red-400/40 bg-red-400/10 text-red-300 hover:border-red-400/70`}>
+              <AlertTriangle size={18} />
+            </button>
+          );
+        }
+
+        return (
+          <button type="button" onClick={openAccountModal} title={`${account.displayName} — ${chain.name}`}
+            aria-label={`Wallet ${account.displayName}, ${chain.name}. Open account options.`}
+            className={`${base} hover:opacity-90`}>
+            <IdentityGem address={account.address} />
+          </button>
+        );
+      }}
+    </ConnectButton.Custom>
   );
 }
 

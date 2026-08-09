@@ -18,6 +18,7 @@ import { cleanverse } from "./lib/cleanverse.js";
 import { reconcileCapTable, serializeReconciliation } from "./lib/reconcile.js";
 import { holderRoutes } from "./routes/holders.js";
 import { onboardRoutes } from "./routes/onboard.js";
+import { identityRoutes } from "./routes/identity.js";
 import { actionRoutes } from "./routes/actions.js";
 import { escrowRoutes } from "./routes/escrow.js";
 import { auditRoutes } from "./routes/audit.js";
@@ -87,6 +88,7 @@ export async function buildApp(opts: BuildAppOptions = {}): Promise<FastifyInsta
 
   await app.register(holderRoutes);
   await app.register(onboardRoutes);
+  await app.register(identityRoutes);
   await app.register(actionRoutes);
   await app.register(escrowRoutes);
   await app.register(auditRoutes);

@@ -20,6 +20,12 @@ const EnvSchema = z.object({
   /// and the backend looks broken even though it is answering correctly.
   CORS_ORIGINS: z.string().default("http://localhost:3000"),
 
+  /// Optional shared secret for the identity freeze/unfreeze route. When set, that route
+  /// requires an `x-talon-admin` header matching it; when unset the route is open, which
+  /// is fine locally. Not authentication — the browser has to send it — just a guard so a
+  /// publicly deployed backend doesn't expose "freeze any holder" to a bare curl.
+  ADMIN_TOKEN: z.string().min(1).optional().or(z.literal("").transform(() => undefined)),
+
   PORT: z.coerce.number().default(4000),
 });
 

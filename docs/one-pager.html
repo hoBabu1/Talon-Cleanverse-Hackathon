@@ -147,7 +147,7 @@
     <div><ul>
       <li><span class="num">90 contract tests green</span> — unit, fuzz, and cross-contract invariants (256 runs × depth 64) proving <span class="mono">sum(ledger) ≤ balanceOf(vault)</span> through the real manager→vault wiring.</li>
       <li><b>Proven with money that moves.</b> A live smoke test on <b>real aUSDC on real Monad testnet</b>: one holder paid directly; a second frozen → escrowed → unfrozen → released → claimed. Drift and recovery, end to end.</li>
-      <li><span class="num">64 live assertions</span> across chain + Cleanverse + database, checking after every step that <b>the chain and the read-mirror agree field by field</b> — because a bug once lived in exactly that seam and returned a clean 200.</li>
+      <li><b>A cross-layer end-to-end test with no mocks</b> — real chain, real Cleanverse sandbox, real database — asserting after every step that <b>the chain and the read-mirror agree field by field</b>, because a bug once lived in exactly that seam and returned a clean 200. It prints its full pass/fail tally each run.</li>
     </ul></div>
     <div><ul>
       <li><b>One vault, every asset.</b> A single vault custodies any number of A-Tokens (<span class="mono">beneficiary → token → amount</span>). No redeploy per issuance.</li>

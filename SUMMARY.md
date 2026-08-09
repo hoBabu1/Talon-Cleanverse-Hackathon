@@ -71,7 +71,7 @@ live cap table → declare corporate action at a record block → re-verify ever
 
 - **90 contract tests green** — unit, fuzz, and cross-contract invariants (256 runs × depth 64) proving `sum(ledger) <= balanceOf(vault)` through the real manager→vault wiring.
 - **Proven with money that moves.** A live smoke test on **real aUSDC on real Monad testnet**: one holder paid directly; a second frozen → escrowed → unfrozen → released → claimed. Drift and recovery, end to end.
-- **64 live assertions** across chain + Cleanverse + database, checking after every step that **the chain and the read-mirror agree field by field** — because a bug once lived in exactly that seam and returned a clean 200.
+- **A cross-layer end-to-end test with no mocks** — real chain, real Cleanverse sandbox, real database — asserting after every step that **the chain and the read-mirror agree field by field**, because a bug once lived in exactly that seam and returned a clean 200. It prints its full pass/fail assertion tally at the end of each run.
 - **One vault, every asset.** A single vault custodies any number of A-Tokens (`beneficiary → token → amount`). No redeploy per issuance.
 - **Resumable batched execution.** A payout run spans as many transactions as the register needs and survives interruption; paginated enumeration means no unbounded loop can brick a view.
 - **Chained-hash commitment** seeded with a provenance binding, so a committed batch cannot be replayed against a different action, token, or deployment.

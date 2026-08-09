@@ -110,7 +110,7 @@ export default function WalletHistoryPage() {
               <>
                 <StatTile label="Balance" value={fmt(data.balance)} sub="TLNB units" icon={PlusCircle} accent />
                 <StatTile label="Identity" value={meta?.label ?? "—"} sub={data.identity.hasApass ? "A-Pass on file" : "no A-Pass"} icon={ShieldCheck} />
-                <StatTile label="A-Pass expiry" value={expiry} sub={data.identity.cvRecordId ? `record ${data.identity.cvRecordId}` : "—"} />
+                <StatTile label="A-Pass expiry" value={expiry} valueClassName="text-xl" sub={data.identity.cvRecordId ? `record ${data.identity.cvRecordId}` : "—"} />
                 <StatTile label="Events" value={data.events.length} sub="on-chain records" />
               </>
             )}

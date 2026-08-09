@@ -13,6 +13,7 @@ export function StatTile({
   icon: Icon,
   accent = false,
   className = "",
+  valueClassName = "text-2xl",
 }: {
   label: string;
   value: ReactNode;
@@ -20,6 +21,10 @@ export function StatTile({
   icon?: LucideIcon;
   accent?: boolean;
   className?: string;
+  /** Override the value's type scale. The default `text-2xl` is tuned for short
+   * numbers ("9", "69.7K"); longer text like a full date needs a smaller size so
+   * it fits the narrow tile instead of being truncated to "Jul 30, 20…". */
+  valueClassName?: string;
 }) {
   return (
     <div
@@ -42,7 +47,7 @@ export function StatTile({
       </div>
       <p
         title={typeof value === "string" || typeof value === "number" ? String(value) : undefined}
-        className={`relative mt-2 truncate text-2xl font-bold tabular-nums transition-colors duration-300 group-hover/tile:text-accent ${
+        className={`relative mt-2 truncate font-bold tabular-nums transition-colors duration-300 group-hover/tile:text-accent ${valueClassName} ${
           accent ? "text-accent" : "text-white"
         }`}
       >

@@ -33,7 +33,6 @@ export default function VideoEmbed({
   title = "Talon demo — eligibility drift, handled end to end",
 }: VideoEmbedProps) {
   const [playing, setPlaying] = useState(false);
-  const [thumbOk, setThumbOk] = useState(true);
 
   return (
     <div className="relative overflow-hidden rounded-card border border-edge bg-card shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
@@ -53,20 +52,18 @@ export default function VideoEmbed({
             aria-label="Play the Talon demo video"
             className="group absolute inset-0 h-full w-full"
           >
-            {thumbOk ? (
-              // eslint-disable-next-line @next/next/no-img-element -- external YouTube thumbnail, dynamic ID
-              <img
-                src={`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`}
-                alt=""
-                onError={() => setThumbOk(false)}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              // YouTube has no maxres thumbnail for every upload. Fall back to the deck
-              // slide rather than a bare black box.
-              <Image src={DECK_POSTER} alt="" fill sizes="(max-width: 768px) 100vw, 1100px" className="object-cover" />
-            )}
-            <span className="absolute inset-0 bg-black/45 transition-colors duration-300 group-hover:bg-black/30" />
+            {/* The deck's architecture slide is the poster (set intentionally).
+                We do NOT pull YouTube's maxresdefault — this upload has none, and
+                a missing maxres leaks a blurry gray placeholder instead of erroring. */}
+            <Image
+              src={DECK_POSTER}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 1100px"
+              className="object-cover"
+              priority
+            />
+            <span className="absolute inset-0 bg-ink/60 transition-colors duration-300 group-hover:bg-ink/45" />
             <span className="absolute inset-0 flex items-center justify-center">
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-white shadow-[0_12px_40px_rgba(248,101,28,0.45)] transition-transform duration-300 group-hover:scale-110 md:h-20 md:w-20">
                 <Play size={26} fill="currentColor" className="ml-1" />

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, Play, X } from "lucide-react";
 import { APP_ENTRY, NAV_LINKS } from "@/lib/site";
 import Button from "./Button";
 
@@ -41,6 +41,10 @@ export default function Nav() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Button href="#demo" variant="ghost" className="hidden md:inline-flex">
+            <Play size={14} fill="currentColor" />
+            Quick Guide
+          </Button>
           <Button href={APP_ENTRY} className="hidden sm:inline-flex">
             Launch App
             <ArrowRight size={15} strokeWidth={2.5} />
@@ -63,6 +67,14 @@ export default function Nav() {
           aria-label="Mobile"
         >
           <div className="flex flex-col">
+            <a
+              href="#demo"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 border-b border-edge/50 py-3.5 text-sm font-semibold text-accent transition-colors hover:text-white"
+            >
+              <Play size={15} fill="currentColor" />
+              Quick Guide
+            </a>
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}

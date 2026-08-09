@@ -116,7 +116,9 @@ export default function Hero() {
         </Reveal>
 
         <Reveal delay={460} className="mt-14 w-full max-w-4xl md:mt-20">
-          <VideoEmbed />
+          <div id="demo" className="scroll-mt-24">
+            <VideoEmbed />
+          </div>
         </Reveal>
       </div>
     </section>

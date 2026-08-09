@@ -6,7 +6,6 @@ Cleanverse Build: Trusted Assets Hackathon · RWA track · solo build.
 - **Live app** — <https://talon-cleanverse-hackathon.vercel.app>
 - **Demo video** — <https://youtu.be/CT_b-7mUf2U>
 - **Code** — <https://github.com/hoBabu1/Talon-Cleanverse-Hackathon>
-- **Print-ready PDF** — [`docs/Talon-One-Page-Summary.pdf`](docs/Talon-One-Page-Summary.pdf)
 
 ## The problem — eligibility drift
 
@@ -45,15 +44,15 @@ A holder is verified on the **record date** and earns a coupon. By the **pay dat
 
 Contracts **deployed and frozen**; both the coupon currency and the asset are real A-Tokens.
 
-- **EscrowVault** — `0xb634379B2afdF12830eaef694cFeaE80fB0dFFB7`
-- **CorporateActionManager** — `0xF897874bAe28443a60ef92741f7df504F90386b6`
+- **EscrowVault** — [`0xb634379B2afdF12830eaef694cFeaE80fB0dFFB7`](https://testnet.monadscan.com/address/0xb634379B2afdF12830eaef694cFeaE80fB0dFFB7)
+- **CorporateActionManager** — [`0xF897874bAe28443a60ef92741f7df504F90386b6`](https://testnet.monadscan.com/address/0xF897874bAe28443a60ef92741f7df504F90386b6)
 - aUSDC (coupon currency) · TLNB "Talon Bond 2026" (the asset)
 
 ## Build quality & scale
 
+- **One vault, every asset** — a single vault custodies any number of A-Tokens; resumable, paginated batched payouts; no per-issuance redeploy.
 - **90 tests green** — unit, fuzz & cross-contract invariants (256 × 64), proving `sum(ledger) ≤ balanceOf(vault)` through the real manager→vault wiring.
 - **Proven with money that moves** — a live smoke test on real aUSDC: one holder paid directly; a second frozen → escrowed → reinstated → released → claimed.
-- **One vault, every asset** — a single vault custodies any number of A-Tokens; resumable, paginated batched payouts; no per-issuance redeploy.
 
 ---
 

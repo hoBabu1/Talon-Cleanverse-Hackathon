@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Talon — One-Page Summary</title>
+<style>
+  @page { size: A4; margin: 11mm 12mm; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 7.45pt;
+    line-height: 1.27;
+    color: #16181d;
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+
+  /* ---------- masthead ---------- */
+  header { border-bottom: 2pt solid #0f1115; padding-bottom: 3pt; margin-bottom: 5pt; }
+  .brandrow { display:flex; align-items:baseline; gap:8pt; }
+  h1 { font-size: 18.5pt; letter-spacing:-0.6pt; margin:0; font-weight:800; }
+  .tag { font-size:8.6pt; font-weight:600; color:#2b2f38; }
+  .sub { font-size:7.5pt; color:#5b616e; margin-top:2.5pt; }
+  .links { margin-top:4pt; font-size:7.5pt; display:flex; flex-wrap:wrap; gap:0 12pt; }
+  .links b { color:#0f1115; }
+  a { color:#0b4fd6; text-decoration:none; }
+
+  /* ---------- section furniture ---------- */
+  h2 {
+    font-size:7.2pt; font-weight:800; letter-spacing:.85pt; text-transform:uppercase;
+    color:#0f1115; margin:0 0 2.6pt 0; padding-bottom:1.3pt;
+    border-bottom:.6pt solid #c9cdd6;
+  }
+  h2 span { color:#8b9098; font-weight:600; letter-spacing:.3pt; text-transform:none; float:right; }
+  section { margin-bottom: 5pt; }
+  p { margin:0 0 2.6pt 0; }
+  .cols { display:grid; grid-template-columns: 1fr 1fr; gap:0 11pt; }
+
+  ul { margin:0 0 0 0; padding-left:9pt; }
+  li { margin-bottom:1.3pt; }
+
+  /* ---------- accents ---------- */
+  .flow {
+    background:#f4f6f9; border-left:2pt solid #0f1115; padding:3.4pt 6pt;
+    font-size:7.2pt; margin:3pt 0; line-height:1.38;
+  }
+  .flow b { font-weight:700; }
+  .keybox { border:.7pt solid #b9bfc9; background:#fbfcfd; padding:3.6pt 6pt; margin-top:3pt; }
+  .bad { color:#a3121b; font-weight:700; }
+  .good { color:#0a6b33; font-weight:700; }
+
+  /* ---------- integrations table ---------- */
+  table { width:100%; border-collapse:collapse; margin-top:1pt; }
+  td { padding:1.6pt 4pt 1.6pt 0; vertical-align:top; border-bottom:.4pt solid #e3e6ec; }
+  td.k { width:31%; font-weight:700; font-size:7.2pt; white-space:nowrap; }
+  td.k .api { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:7pt; font-weight:600; color:#0f1115; }
+
+  /* ---------- deployed ---------- */
+  .addr { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:6.8pt; }
+  .addrtable td { border-bottom:.4pt solid #e8eaef; padding:1.4pt 4pt 1.4pt 0; }
+  .addrtable td.n { font-weight:700; width:38%; font-family:inherit; font-size:7.5pt; }
+
+  .num { font-weight:800; color:#0f1115; }
+  footer { margin-top:4pt; padding-top:2.6pt; border-top:.6pt solid #c9cdd6; font-size:6.9pt; color:#6b7280; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brandrow">
+    <h1>TALON</h1>
+    <div class="tag">On-chain transfer agent for Cleanverse-verified real-world assets</div>
+  </div>
+  <div class="sub">Cleanverse Build: Trusted Assets Hackathon &middot; RWA track &middot; solo build &middot; contracts live &amp; frozen on Monad testnet</div>
+  <div class="links">
+    <span><b>Live app</b> <a href="https://talon-cleanverse-hackathon.vercel.app">talon-cleanverse-hackathon.vercel.app</a></span>
+    <span><b>Demo video</b> <a href="https://youtu.be/CT_b-7mUf2U">youtu.be/CT_b-7mUf2U</a></span>
+    <span><b>Code</b> <a href="https://github.com/hoBabu1/Talon-Cleanverse-Hackathon">github.com/hoBabu1/Talon-Cleanverse-Hackathon</a></span>
+  </div>
+</header>
+
+<section>
+  <h2>Problem <span>eligibility drift — the gap between record date and pay date</span></h2>
+  <p>Every RWA project stops at <i>issuance</i>. Nobody runs what happens <i>after</i>: coupons, dividends, redemptions. And post-issuance hides a failure mode unique to verified assets.</p>
+  <p>A bondholder is verified on the <b>record date</b>. The issuer declares a coupon. By the <b>pay date</b> — days later — that holder's A-Pass has expired, or their bank has frozen it. The issuer now has two options and <b>both are wrong</b>:</p>
+  <div class="cols">
+    <div><ul>
+      <li><span class="bad">Pay them anyway</span> → a compliance violation. Cleanverse's own A-Token won't even permit it; the transfer reverts on-chain.</li>
+    </ul></div>
+    <div><ul>
+      <li><span class="bad">Withhold the coupon</span> → theft. They were fully verified when they <i>earned</i> it. An expired document is not a forfeiture of property.</li>
+    </ul></div>
+  </div>
+  <p style="margin-top:3pt"><b>This problem exists only because CVI credentials are revocable and expiring.</b> On a plain ERC-20 there is nothing to drift — which is why Talon could not have been built on anything but Cleanverse.</p>
+</section>
+
+<section>
+  <h2>Solution <span>pay the compliant, preserve the lapsed, release on re-verification</span></h2>
+  <div class="flow">
+    live cap table &rarr; <b>declare</b> corporate action at a record block &rarr; <b>re-verify every holder at pay date</b> &rarr; <span class="good">pay directly</span> where compliant &rarr; <b>escrow per-beneficiary</b> where not, tagged with the on-chain reason &rarr; <b>release</b> the moment they re-verify &rarr; <b>full audit export</b> with Travel Rule reports
+  </div>
+  <div class="keybox">
+    <b>The core design decision: Talon never re-implements compliance.</b> It keeps no allowlist of its own. At pay date it simply attempts the <i>real</i> A-Token transfer and lets Cleanverse's contract revert by itself. Escrow release is a <b>retry of that same real transfer</b> — so if it succeeds, the holder is genuinely eligible again, as judged by Cleanverse, not by us. The chain is the source of truth; we only react to it.
+  </div>
+  <p style="margin-top:4pt"><b>Honest positioning.</b> Corporate-actions machinery does exist — Polymesh's pallet, Securitize's DS Protocol. What doesn't exist: preserving a lapsed holder's entitlement <i>per beneficiary</i>, separating <i>expired</i> from <i>frozen</i> as distinct on-chain reasons, and attributing the eventual release with a Travel Rule report. Polymesh conflates lapsed with sanctioned and forfeits unclaimed value to the issuer at expiry. <b>Talon never forfeits — there is deliberately no admin-confiscation function in the contract.</b></p>
+</section>
+
+<section>
+  <h2>CVI &middot; CVA integration points <span>six, all live against the real sandbox — none mocked</span></h2>
+  <table>
+    <tr><td class="k">A-Pass <span style="font-weight:400">(CVI)</span></td><td>The revocable, expiring credential that the entire product is a reaction to. Every holder in the register carries one.</td></tr>
+    <tr><td class="k">A-Token <span style="font-weight:400">(CVA)</span></td><td>The asset and the coupon currency. <b>Its on-chain revert <i>is</i> our compliance check</b> — we never second-guess it.</td></tr>
+    <tr><td class="k"><span class="api">generate_apass</span></td><td>The escrow vault can custody A-Tokens <b>only because it holds its own A-Pass</b> — a contract is a party too.</td></tr>
+    <tr><td class="k"><span class="api">query_apass</span> / <span class="api">verify_apass</span></td><td>The eligibility poller. Cleanverse ships no webhook for status changes, so we poll and reconcile.</td></tr>
+    <tr><td class="k"><span class="api">update_status</span></td><td>The issuer freezes or reinstates a holder <b>from the dashboard</b>, and we wait for the chain to enforce it before reporting success.</td></tr>
+    <tr><td class="k"><span class="api">download_travel_rule</span></td><td>Per-payout regulatory report, participation-verified before request, <b>bytes stored</b> — not just a URL that may expire.</td></tr>
+  </table>
+  <p style="margin-top:4pt"><b>Depth, not surface — five things only real integration teaches:</b></p>
+  <div class="cols">
+    <div><ul>
+      <li><b>Three distinct failure modes, never conflated.</b> <span class="mono">APassNotActive</span> <span class="mono">0x322fde89</span> (frozen), <span class="mono">APassExpired</span> <span class="mono">0xaecc0dbe</span> (expired), <span class="mono">NoAPass</span> <span class="mono">0xa6725971</span>. Expired carries its own on-chain reason tag — folding it into "frozen" would make our own data contradict our claim that <i>lapsed ≠ sanctioned</i>.</li>
+      <li><b>Revert data names the offending party.</b> So a holder failure escrows <i>that holder</i>, while an issuer- or vault-side failure reverts the whole batch — one party's problem is never misattributed to another's.</li>
+      <li><b>Senders are checked too</b>, so the vault's own A-Pass is a live dependency — the poller watches it, and our own admin route refuses to freeze the vault or the issuer, since either would halt every payout in the register.</li>
+    </ul></div>
+    <div><ul>
+      <li><b><span class="mono">download_travel_rule</span> does not verify participation</b> — it returns a valid-looking report for a wallet that never appeared in the transaction. We check the transaction's own Transfer logs first.</li>
+      <li><b>A 200 from a Cleanverse write is not proof of on-chain state.</b> <span class="mono">generate_apass</span> returns success while <span class="mono">verify_apass</span> still reports inactive for seconds afterwards. Every write goes through one helper that waits for the chain to agree before anything is recorded.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Deployed chain <span>Monad testnet &middot; chain ID 10143 &middot; contracts deployed and frozen</span></h2>
+  <table class="addrtable">
+    <tr><td class="n">EscrowVault — per-beneficiary escrow engine</td><td class="addr">0xb634379B2afdF12830eaef694cFeaE80fB0dFFB7</td></tr>
+    <tr><td class="n">CorporateActionManager — declares &amp; pays</td><td class="addr">0xF897874bAe28443a60ef92741f7df504F90386b6</td></tr>
+    <tr><td class="n">TLNB "Talon Bond 2026" — the asset (A-Token)</td><td class="addr">0xbAE642890988C3EF56e77Fb041aFD847A6131d64</td></tr>
+    <tr><td class="n">aUSDC — the coupon currency (A-Token)</td><td class="addr">0xaC0893567D43C3E7e6e35a72803df05416C1f20D</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>Proof &amp; scalability <span>verified against the real chain, real sandbox, real database</span></h2>
+  <div class="cols">
+    <div><ul>
+      <li><span class="num">90 contract tests green</span> — unit, fuzz, and cross-contract invariants (256 runs × depth 64) proving <span class="mono">sum(ledger) ≤ balanceOf(vault)</span> through the real manager→vault wiring.</li>
+      <li><b>Proven with money that moves.</b> A live smoke test on <b>real aUSDC on real Monad testnet</b>: one holder paid directly; a second frozen → escrowed → unfrozen → released → claimed. Drift and recovery, end to end.</li>
+      <li><span class="num">64 live assertions</span> across chain + Cleanverse + database, checking after every step that <b>the chain and the read-mirror agree field by field</b> — because a bug once lived in exactly that seam and returned a clean 200.</li>
+    </ul></div>
+    <div><ul>
+      <li><b>One vault, every asset.</b> A single vault custodies any number of A-Tokens (<span class="mono">beneficiary → token → amount</span>). No redeploy per issuance.</li>
+      <li><b>Resumable batched execution.</b> A payout run spans as many transactions as the register needs and survives interruption; paginated enumeration means no unbounded loop can brick a view.</li>
+      <li><b>Chained-hash commitment</b> seeded with a provenance binding, so a committed batch cannot be replayed against a different action, token, or deployment.</li>
+      <li><b>Event-sourced.</b> Off-chain state rebuilds from logs; the database is a read-mirror, never a second source of truth.</li>
+    </ul></div>
+  </div>
+</section>
+
+<footer>
+  <span>Talon &middot; built solo in the 48-hour window &middot; <span class="mono">@thedhanyosmi</span></span>
+  <span>Mobile-first dashboard: live cap table &middot; corporate actions &middot; escrow ledger &middot; identity control &middot; audit export</span>
+</footer>
+
+</body>
+</html>

@@ -8,6 +8,7 @@ Built solo for the [Cleanverse Build: Trusted Assets Hackathon](https://cleanver
 
 ### Try it now
 
+- 📄 **One-page summary:** [read it](SUMMARY.md) · [print-ready PDF](docs/Talon-One-Page-Summary.pdf)
 - ▶ **Demo video:** [watch the walkthrough](https://youtu.be/CT_b-7mUf2U)
 - 🖥️ **Live app:** <https://talon-cleanverse-hackathon.vercel.app>
 - 🩺 **Backend health:** <https://talon-cleanverse-hackathon.onrender.com/health>

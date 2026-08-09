@@ -17,7 +17,7 @@ export const X_URL = "https://x.com/thedhanyosmi";
  * (e.g. "dQw4w9WgXcQ"). While empty, the hero renders a branded
  * "video coming soon" placeholder instead of the player.
  */
-export const DEMO_VIDEO_ID = "";
+export const DEMO_VIDEO_ID = "CT_b-7mUf2U";
 
 /** Monad testnet block explorer (monadvision.com is dead; monadexplorer is the live one). */
 export const EXPLORER_ADDRESS_URL = "https://testnet.monadexplorer.com/address/";

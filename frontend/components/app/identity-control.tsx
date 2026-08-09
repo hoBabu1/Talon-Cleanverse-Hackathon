@@ -50,11 +50,24 @@ function badgeFor(state: EligibilityState): DisplayState | null {
   return state === "inconclusive" ? null : state;
 }
 
-export function IdentityControl() {
+/**
+ * `value`/`onValueChange` make the wallet field optionally CONTROLLED, so a page can
+ * drive it from elsewhere (the identity roster's rows). Left out, the panel owns its own
+ * state and works standalone — which is how it's mounted on the cap table page.
+ */
+export function IdentityControl({
+  value,
+  onValueChange,
+}: {
+  value?: string;
+  onValueChange?: (next: string) => void;
+} = {}) {
   const queryClient = useQueryClient();
   const holdersQuery = useHolders();
 
-  const [address, setAddress] = useState("");
+  const [ownAddress, setOwnAddress] = useState("");
+  const address = value ?? ownAddress;
+  const setAddress = onValueChange ?? setOwnAddress;
   const [phase, setPhase] = useState<Phase>("idle");
   const [action, setAction] = useState<IdentityAction | null>(null);
   const [result, setResult] = useState<IdentityStatusResponse | null>(null);

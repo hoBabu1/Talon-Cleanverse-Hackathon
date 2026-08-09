@@ -4,6 +4,7 @@ import {
   Landmark,
   LayoutDashboard,
   ScrollText,
+  ShieldAlert,
   UserPlus,
   Vault,
   type LucideIcon,
@@ -29,8 +30,8 @@ export type NavItem = {
 
 /** Single source of truth for the connected-wallet app's nav.
  *
- * Two groups fan out into an issuer-only tool + a public read view:
- *   Register → Onboard (issuer) · Cap Table (all)
+ * Two groups fan out into issuer-only tools + a public read view:
+ *   Register → Onboard (issuer) · Identity (issuer) · Cap Table (all)
  *   Actions  → Corporate Actions (issuer) · History (all)
  * Each group's own `href` points at its PUBLIC child. */
 export const NAV_ITEMS: NavItem[] = [
@@ -40,6 +41,7 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Landmark,
     children: [
       { href: "/register/onboard", label: "Onboard", icon: UserPlus, issuerOnly: true },
+      { href: "/register/identity", label: "Identity", icon: ShieldAlert, issuerOnly: true },
       { href: "/register", label: "Cap Table", icon: LayoutDashboard },
     ],
   },
